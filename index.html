@@ -1997,7 +1997,173 @@
   "companies": ["TBD"]
 }
 
+,
+"Liechtenstein": {
+  "tariff_rate": 37,
+  "tariff_charged_to_us": 73,
+  "impacted_goods": [
+    "TBD"
+  ],
+  "companies": [
+    "TBD"
+  ]
+}, 
+{
+  "Burkina Faso": {
+    "tariff_rate": 0,
+    "tariff_charged_to_us": 0,
+    "impacted_goods": [],
+    "companies": []
+  },
+  "France": {
+    "tariff_rate": 20,
+    "tariff_charged_to_us": 25,
+    "impacted_goods": [
+      "Wine",
+      "Cheese",
+      "Luxury goods"
+    ],
+    "companies": [
+      "LVMH",
+      "Renault",
+      "Danone"
+    ]
+  },
+  "Portugal": {
+    "tariff_rate": 20,
+    "tariff_charged_to_us": 25,
+    "impacted_goods": [
+      "Cork products",
+      "Pharmaceuticals",
+      "Pulp and paper"
+    ],
+    "companies": [
+      "Corticeira Amorim",
+      "Navigator Company",
+      "Bial"
+    ]
+  },
+  "Germany": {
+    "tariff_rate": 20,
+    "tariff_charged_to_us": 25,
+    "impacted_goods": [
+      "Automobiles",
+      "Beer",
+      "Footwear"
+    ],
+    "companies": [
+      "Volkswagen",
+      "BMW",
+      "Birkenstock"
+    ]
+  },
+  "Sweden": {
+    "tariff_rate": 20,
+    "tariff_charged_to_us": 25,
+    "impacted_goods": [
+      "Automobiles",
+      "Pharmaceuticals",
+      "Machinery"
+    ],
+    "companies": [
+      "Volvo",
+      "AstraZeneca",
+      "Ericsson"
+    ]
+  },
+  "Ireland": {
+    "tariff_rate": 20,
+    "tariff_charged_to_us": 25,
+    "impacted_goods": [
+      "Pharmaceuticals",
+      "Whiskey",
+      "Medical devices"
+    ],
+    "companies": [
+      "Pfizer",
+      "Jameson",
+      "Medtronic"
+    ]
+  },
+  "Spain": {
+    "tariff_rate": 20,
+    "tariff_charged_to_us": 25,
+    "impacted_goods": [
+      "Olive oil",
+      "Wine",
+      "Auto parts"
+    ],
+    "companies": [
+      "Repsol",
+      "SEAT",
+      "Freixenet"
+    ]
+  },
+  "Finland": {
+    "tariff_rate": 20,
+    "tariff_charged_to_us": 25,
+    "impacted_goods": [
+      "Machinery",
+      "Electronics",
+      "Pulp and paper"
+    ],
+    "companies": [
+      "Nokia",
+      "UPM-Kymmene",
+      "Kone"
+    ]
+  },
+  "Romania": {
+    "tariff_rate": 20,
+    "tariff_charged_to_us": 25,
+    "impacted_goods": [
+      "Automotive parts",
+      "Textiles",
+      "Electronics"
+    ],
+    "companies": [
+      "Dacia",
+      "ArcelorMittal",
+      "Electroputere"
+    ]
+  },
+  "Italy": {
+    "tariff_rate": 20,
+    "tariff_charged_to_us": 25,
+    "impacted_goods": [
+      "Automobiles",
+      "Apparel",
+      "Furniture"
+    ],
+    "companies": [
+      "Fiat",
+      "Gucci",
+      "Natuzzi"
+    ]
+  },
+  "Greece": {
+    "tariff_rate": 20,
+    "tariff_charged_to_us": 25,
+    "impacted_goods": [
+      "Feta cheese",
+      "Olives",
+      "Wine"
+    ],
+    "companies": [
+      "Dodoni",
+      "Minerva",
+      "Tsantali"
+    ]
+  }
+}
 };
+
+const euMembers = [
+  "Austria", "Belgium", "Bulgaria", "Croatia", "Republic of Cyprus", "Czech Republic",
+  "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary",
+  "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands",
+  "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden"
+];
 
     const getColor = (rate) => {
       if (!rate || rate === 0) return '#ffffff'; // White for no data
@@ -2050,33 +2216,41 @@
                 geojson.resetStyle(e.target);
               },
               click: function () {
-                if (data) {
-                  const exemptionText = data.usmca_exempt
-                    ? 'USMCA treaty exemption applies to some goods'
-                    : data.fta_exempt
-                    ? 'FTA exemption applies to some goods'
-                    : '';
+  if (data) {
+    const exemptionText = data.usmca_exempt
+      ? 'USMCA treaty exemption applies to some goods'
+      : data.fta_exempt
+      ? 'FTA exemption applies to some goods'
+      : '';
 
-                  const exemptedGoodsText = data.exempted_goods && data.exempted_goods.length > 0
-                    ? `<p><strong>Exempted Goods:</strong> ${data.exempted_goods.join(", ")}</p>`
-                    : '';
+    const exemptedGoodsText = data.exempted_goods && data.exempted_goods.length > 0
+      ? `<p><strong>Exempted Goods:</strong> ${data.exempted_goods.join(", ")}</p>`
+      : '';
 
-                  const popupContent = `
-                    <div>
-                      <h3>${country}</h3>
-                      <p><strong>Tariff Rate:</strong> ${data.tariff_rate}%</p>
-                      <p><strong>Impacted Goods:</strong> ${data.impacted_goods.join(", ")}</p>
-                      <p><strong>Companies:</strong> ${data.companies.join(", ")}</p>
-                      ${exemptionText ? `<p><em>${exemptionText}</em></p>` : ''}
-                      ${exemptedGoodsText}
-                    </div>
-                  `;
-                  layer.bindPopup(popupContent).openPopup();
-                } else {
-                  layer.bindPopup(`<h3>${country}</h3><p>No data available.</p>`).openPopup();
-                }
-              }
-            });
+    const euNote = euMembers.includes(country)
+      ? '<p><em>Member of the European Union</em></p>'
+      : '';
+
+    const popupContent = `
+      <div>
+        <h3>${country}</h3>
+        ${euNote}
+        <p><strong>Tariff Rate:</strong> ${data.tariff_rate}%</p>
+        <p><strong>Impacted Goods:</strong> ${data.impacted_goods.join(", ")}</p>
+        <p><strong>Companies:</strong> ${data.companies.join(", ")}</p>
+        ${exemptionText ? `<p><em>${exemptionText}</em></p>` : ''}
+        ${exemptedGoodsText}
+      </div>
+    `;
+    layer.bindPopup(popupContent).openPopup();
+  } else {
+    const euNote = euMembers.includes(country)
+      ? '<p><em>Member of the European Union</em></p>'
+      : '';
+    layer.bindPopup(`<h3>${country}</h3>${euNote}<p>No data available.</p>`).openPopup();
+  }
+}
+
           }
         }).addTo(map);
 
